@@ -1,7 +1,8 @@
 import { getProductsByCategory, getAllCategorySlugs } from "@/lib/datocms"
-import type { Metadata } from "next"
 import CategoryPageClient from "./CategoryPageClient"
+import type { Metadata } from "next"
 
+export const dynamic = 'force-dynamic';
 export const revalidate = 60
 
 export async function generateStaticParams() {
