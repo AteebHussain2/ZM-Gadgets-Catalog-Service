@@ -1,10 +1,9 @@
-import { getAllCategories } from "@/lib/datocms"
-import { Input } from "@/components/ui/input"
-import { CartSidebar } from "./cart-sidebar"
-import { ThemeToggle } from "./theme-toggle"
-import { Search } from "lucide-react"
-import Image from "next/image"
 import Link from "next/link"
+import { ThemeToggle } from "./theme-toggle"
+import { CartSidebar } from "./cart-sidebar"
+import { Search } from "lucide-react"
+import { Input } from "@/components/ui/input"
+import { getAllCategories } from "@/lib/datocms"
 
 export default async function Navbar() {
   const { allCategories } = await getAllCategories().catch(() => ({ allCategories: [] as any[] }))
@@ -12,8 +11,13 @@ export default async function Navbar() {
     <header className="sticky top-0 z-40 border-b bg-background/80 backdrop-blur">
       <div className="container mx-auto flex h-16 items-center justify-between gap-3 px-4">
         <Link href="/" className="flex items-center gap-2">
-          <Image src={'/logo.jpg'} width={42} height={42} alt='logo' />
-          <span className="text-base font-bold">ZM gadgets online Trend e commerce</span>
+          <div
+            className="flex h-8 w-8 items-center justify-center rounded-md"
+            style={{ background: "linear-gradient(135deg,#F7941D,#FFD300)" }}
+          >
+            <span className="text-xs font-extrabold text-black">ZM</span>
+          </div>
+          <span className="text-base font-bold">ZM Gadgets</span>
         </Link>
         <form action="/" className="hidden min-w-0 flex-1 items-center gap-2 sm:flex">
           <div className="relative w-full max-w-xl">

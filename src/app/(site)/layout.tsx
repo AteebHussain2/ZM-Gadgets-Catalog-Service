@@ -24,16 +24,10 @@ export const revalidate = 60
 
 export default function SiteLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body>
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <CartProvider>
-            <Navbar />
-            <main className="container mx-auto px-4">{children}</main>
-            <Footer />
-          </CartProvider>
-        </ThemeProvider>
-      </body>
-    </html>
+    <>
+      <Navbar />
+      <main className="container mx-auto px-4">{children}</main>
+      <Footer />
+    </>
   )
 }

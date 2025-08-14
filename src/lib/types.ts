@@ -12,7 +12,7 @@ export type Product = {
   slug: string
   price: number
   discount?: number | null
-  stockstatus?: boolean,
+  stockstatus?: string | null
   description?: string | null
   category?: { id: string; name: string; slug: string } | null
   images?: { url: string }[]

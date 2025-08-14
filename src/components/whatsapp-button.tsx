@@ -1,3 +1,5 @@
+"use client"
+
 import type React from "react"
 
 import { Button } from "@/components/ui/button"
@@ -13,24 +15,26 @@ function enc(s: string) {
 
 export function whatsappProductLink(product: {
   name: string
+  slug: string
   price: number
   discount?: number | null
 }) {
   const { discounted } = priceWithDiscount(product.price, product.discount)
-  const text = `Hi I am interested in the product: ${product.name} - ${formatCurrency(discounted)}`
+  const productUrl = `${typeof window !== "undefined" ? window.location.origin : "https://zm-gadgets.com"}/product/${product.slug}`
+  const text = `Hi! I'm interested in this product:\n\n*${product.name}*\nPrice: ${formatCurrency(discounted)}\n\nProduct Link: ${productUrl}\n\nCan you provide more details?`
   return `https://wa.me/${WHATSAPP_NUMBER}?text=${enc(text)}`
 }
 
 export function whatsappCartLink(items: CartItem[]) {
   const lines = items.map((i) => {
     const { discounted } = priceWithDiscount(i.price, i.discount)
-    return `- ${i.name} ${formatCurrency(discounted)} x ${i.quantity}`
+    return `• ${i.name} - ${formatCurrency(discounted)} x ${i.quantity}`
   })
   const total = items.reduce((sum, i) => {
     const { discounted } = priceWithDiscount(i.price, i.discount)
     return sum + discounted * i.quantity
   }, 0)
-  const text = `Hi I want to order:\n${lines.join("\n")}\n\nTotal: ${formatCurrency(total)}`
+  const text = `Hi! I want to place an order:\n\n${lines.join("\n")}\n\n*Total: ${formatCurrency(total)}*\n\nPlease confirm availability and delivery details.`
   return `https://wa.me/${WHATSAPP_NUMBER}?text=${enc(text)}`
 }
 
@@ -44,9 +48,9 @@ export function WhatsAppButton({
   className?: string
 }) {
   return (
-    <Button asChild className={className} style={{ backgroundColor: "#25D366", color: "#000" }}>
+    <Button asChild className={className} style={{ backgroundColor: "#25D366", color: "#fff" }}>
       <a href={href} target="_blank" rel="noopener noreferrer">
-        <MessageCircle className="h-4 w-4" />
+        <MessageCircle className="mr-2 h-4 w-4" />
         {children ?? "Order on WhatsApp"}
       </a>
     </Button>

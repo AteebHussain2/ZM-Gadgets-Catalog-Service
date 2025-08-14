@@ -8,34 +8,33 @@ export function CategoryMenu({
   categories?: Category[]
 }) {
   if (!categories?.length) return null
+
   return (
     <div className="not-prose">
-      <div className="flex items-center justify-between">
-        <h2 className="text-lg font-semibold">Browse Categories</h2>
-        <Link href="/#categories" className="text-sm text-primary hover:underline">
-          View all
-        </Link>
-      </div>
-      <div className="mt-3 flex gap-3 overflow-x-auto pb-2">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
         {categories.map((c) => (
           <Link
             key={c.id}
             href={`/category/${c.slug}`}
-            className="group relative flex min-w-[140px] flex-col overflow-hidden rounded-xl border"
+            className="group relative flex flex-col overflow-hidden rounded-2xl border bg-card shadow-sm transition-all duration-300 hover:shadow-lg hover:-translate-y-1"
           >
-            <div className="relative h-24 w-full">
+            <div className="relative aspect-square w-full overflow-hidden">
               <Image
                 src={
                   c.thumbnail?.url ||
-                  `/placeholder.svg?height=96&width=160&query=${encodeURIComponent(c.name + " category")}`
+                  `/placeholder.svg?height=200&width=200&query=${encodeURIComponent(c.name + " category") || "/placeholder.svg"}`
                 }
                 alt={c.name}
                 fill
-                sizes="160px"
-                className="object-cover transition-transform duration-300 group-hover:scale-105"
+                sizes="(max-width: 768px) 50vw, 16vw"
+                className="object-cover transition-transform duration-500 group-hover:scale-110"
               />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+              <div className="absolute bottom-3 left-3 right-3">
+                <h3 className="font-semibold text-white text-sm">{c.name}</h3>
+                {c.description && <p className="text-xs text-white/80 line-clamp-2 mt-1">{c.description}</p>}
+              </div>
             </div>
-            <div className="p-2 text-sm font-medium">{c.name}</div>
           </Link>
         ))}
       </div>

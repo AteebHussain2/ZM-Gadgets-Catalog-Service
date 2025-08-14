@@ -18,7 +18,6 @@ export async function fetchDato<T>(
       Authorization: `Bearer ${TOKEN}`,
     },
     body: JSON.stringify({ query, variables }),
-    // ISR
     next: { revalidate: options?.revalidate ?? 60 },
   })
 
@@ -45,15 +44,13 @@ export const queries = {
         name
         slug
         description
-        thumbnail {
-          url
-        }
+        thumbnail { url }
       }
     }
   `,
-  featuredProducts: `
-    query FeaturedProducts {
-      allProducts(filter: { featured: { eq: true } }, first: 24) {
+  allProducts: `
+    query AllProducts {
+      allProducts(first: 100, orderBy: _createdAt_DESC) {
         id
         name
         slug
@@ -61,23 +58,34 @@ export const queries = {
         discount
         stockstatus
         description
-        category {
-          id
-          name
-          slug
-        }
-        images {
-          url
-        }
+        category { id name slug }
+        images { url }
+        featured
+      }
+    }
+  `,
+  featuredProducts: `
+    query FeaturedProducts {
+      allProducts(filter: { featured: { eq: true } }, first: 24, orderBy: _createdAt_DESC) {
+        id
+        name
+        slug
+        price
+        discount
+        stockstatus
+        description
+        category { id name slug }
+        images { url }
         featured
       }
     }
   `,
   productsByCategory: `
-    query ProductsByCategory($slug: String) {
+    query ProductsByCategory($categoryId: ItemId) {
       allProducts(
-        filter: { category: { slug: { eq: $slug } } }
+        filter: { category: { eq: $categoryId } }
         first: 200
+        orderBy: _createdAt_DESC
       ) {
         id
         name
@@ -86,16 +94,14 @@ export const queries = {
         discount
         stockstatus
         description
-        category {
-          id
-          name
-          slug
-        }
-        images {
-          url
-        }
+        category { id name slug }
+        images { url }
         featured
       }
+    }
+  `,
+  categoryBySlug: `
+    query CategoryBySlug($slug: String) {
       category(filter: { slug: { eq: $slug } }) {
         id
         name
@@ -114,30 +120,43 @@ export const queries = {
         discount
         stockstatus
         description
-        category {
-          id
-          name
-          slug
+        category { id name slug }
+        images { url }
+        featured
+      }
+    }
+  `,
+  relatedProducts: `
+    query RelatedProducts($categoryId: ItemId, $currentSlug: String) {
+      allProducts(
+        filter: { 
+          category: { eq: $categoryId }
+          slug: { neq: $currentSlug }
         }
-        images {
-          url
-        }
+        first: 8
+        orderBy: _createdAt_DESC
+      ) {
+        id
+        name
+        slug
+        price
+        discount
+        stockstatus
+        description
+        category { id name slug }
+        images { url }
         featured
       }
     }
   `,
   allProductSlugs: `
     query AllProductSlugs {
-      allProducts(first: 1000) {
-        slug
-      }
+      allProducts(first: 1000) { slug }
     }
   `,
   allCategorySlugs: `
     query AllCategorySlugs {
-      allCategories(first: 1000) {
-        slug
-      }
+      allCategories(first: 1000) { slug }
     }
   `,
   productsBySlugs: `
@@ -148,9 +167,8 @@ export const queries = {
         slug
         price
         discount
-        images {
-          url
-        }
+        stockstatus
+        images { url }
       }
     }
   `,
@@ -160,19 +178,42 @@ export async function getAllCategories() {
   return fetchDato<{ allCategories: any[] }>(queries.categories)
 }
 
+export async function getAllProducts() {
+  return fetchDato<{ allProducts: any[] }>(queries.allProducts)
+}
+
 export async function getFeaturedProducts() {
   return fetchDato<{ allProducts: any[] }>(queries.featuredProducts)
 }
 
+export async function getCategoryBySlug(slug: string) {
+  return fetchDato<{ category: any | null }>(queries.categoryBySlug, { slug })
+}
+
 export async function getProductsByCategory(slug: string) {
-  return fetchDato<{ allProducts: any[]; category: any | null }>(
-    queries.productsByCategory,
-    { slug }
-  )
+  // First get the category to get its ID
+  const categoryData = await getCategoryBySlug(slug)
+  if (!categoryData.category) {
+    return { allProducts: [], category: null }
+  }
+
+  // Then get products by category ID
+  const productsData = await fetchDato<{ allProducts: any[] }>(queries.productsByCategory, {
+    categoryId: categoryData.category.id,
+  })
+
+  return {
+    allProducts: productsData.allProducts,
+    category: categoryData.category,
+  }
 }
 
 export async function getProductBySlug(slug: string) {
   return fetchDato<{ product: any | null }>(queries.productBySlug, { slug })
+}
+
+export async function getRelatedProducts(categoryId: string, currentSlug: string) {
+  return fetchDato<{ allProducts: any[] }>(queries.relatedProducts, { categoryId, currentSlug })
 }
 
 export async function getAllProductSlugs() {
@@ -180,9 +221,7 @@ export async function getAllProductSlugs() {
 }
 
 export async function getAllCategorySlugs() {
-  return fetchDato<{ allCategories: { slug: string }[] }>(
-    queries.allCategorySlugs
-  )
+  return fetchDato<{ allCategories: { slug: string }[] }>(queries.allCategorySlugs)
 }
 
 export async function getProductsBySlugs(slugs: string[]) {

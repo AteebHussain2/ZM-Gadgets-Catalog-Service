@@ -1,5 +1,5 @@
-import { Facebook, Instagram, MessageCircle, Phone } from "lucide-react"
 import Link from "next/link"
+import { Facebook, Instagram, MessageCircle, Phone } from "lucide-react"
 
 export default function Footer() {
   return (
@@ -43,9 +43,8 @@ export default function Footer() {
           </div>
         </div>
       </div>
-      <div className="flex flex-col items-center gap-1 border-t py-4 text-center text-sm text-muted-foreground">
-        <span>© {new Date().getFullYear()} BrandNest</span>
-        <span className="text-primary">Developed with <span className="text-rose-400 dark:text-rose-600">❤</span> by <a className="" href="https://brandnest.vercel.app/"><span className="font-bold text-blue-400 dark:text-blue-600">Brand</span><span className="font-bold text-yellow-400 dark:text-yellow-600">Nest</span></a></span>
+      <div className="border-t py-4 text-center text-xs text-muted-foreground">
+        © {new Date().getFullYear()} ZM Gadgets
       </div>
     </footer>
   )
