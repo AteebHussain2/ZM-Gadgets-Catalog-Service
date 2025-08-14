@@ -1,11 +1,8 @@
-"use client"
-
-import type React from "react"
-
+import { formatCurrency, priceWithDiscount } from "@/lib/format"
 import { Button } from "@/components/ui/button"
 import { MessageCircle } from "lucide-react"
 import type { CartItem } from "@/lib/types"
-import { formatCurrency, priceWithDiscount } from "@/lib/format"
+import type React from "react"
 
 const WHATSAPP_NUMBER = "923062464217"
 
