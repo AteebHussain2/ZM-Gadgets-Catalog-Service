@@ -43,8 +43,13 @@ export default function Footer() {
           </div>
         </div>
       </div>
-      <div className="border-t py-4 text-center text-xs text-muted-foreground">
-        © {new Date().getFullYear()} ZM Gadgets
+      <div className="border-t py-4 text-center">
+        <p className="text-xs text-muted-foreground">© {new Date().getFullYear()} BrandNest</p>
+        <Link href="https://brandnest.vercel.app/" target="_blank">
+          <span className="text-primary">Build with <span className="text-rose-600 dark:text-rose-400">❤</span> by</span>
+          <span className="text-blue-600 dark:text-blue-400">Brand</span>
+          <span className="text-orange-600 dark:text-orange-400">Nest</span>
+        </Link>
       </div>
     </footer>
   )
