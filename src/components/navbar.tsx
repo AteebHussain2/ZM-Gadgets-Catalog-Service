@@ -13,7 +13,7 @@ export default async function Navbar() {
       <div className="container mx-auto flex h-16 items-center justify-between gap-3 px-4">
         <Link href="/" className="flex items-center gap-2">
           <Image
-            src='/logo.jog'
+            src='/logo.jpg'
             width={48}
             height={48}
             alt="Logo"
